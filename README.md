@@ -10,10 +10,6 @@
 
 使用前请安装相关依赖(推荐使用 MVN 配置测试环境):
 
-```bash
-mvn package
-```
-
 修改appId、entryId和APIKey
 
 ```java
@@ -23,6 +19,12 @@ String apiKey = "CTRP5jibfk7qnnsGLCCcmgnBG6axdHiX";
 ```
 
 按照表单配置修改请求参数
+
+mvn打包
+
+```bash
+mvn package
+```
 
 启动运行
 
