@@ -96,9 +96,9 @@ public class Demo {
                 URIBuilder uriBuilder = new URIBuilder(url);
                 if (data != null) {
                     // 添加请求参数
-                    data.forEach((key, value) -> {
-                        uriBuilder.addParameter(key, (String) value);
-                    });
+                    for(Map.Entry<String, Object> entry : data.entrySet()) {
+                        uriBuilder.addParameter(entry.getKey(), (String) entry.getValue());
+                    }
                 }
                 request = new HttpGet(uriBuilder.build());
             } else if ("POST".equals(method)) {
@@ -119,7 +119,7 @@ public class Demo {
             Map<String, Object> result = (Map<String, Object>) mapper.readValue(response.getEntity().getContent(), Object.class);
             if (statusCode >= 400) {
                 // 请求错误
-                if ((int) result.get("code") == 8303 && this.retryIfRateLimited) {
+                if ((Integer) result.get("code") == 8303 && this.retryIfRateLimited) {
                     // 频率超限，5s后重试
                     Thread.sleep(5000);
                     return this.sendRequest(method, url, data);
@@ -155,7 +155,7 @@ public class Demo {
          * @param dataId - 上次取数的最后一个数据id
          * @return - 返回的数据
          */
-        public List<Map<String, Object>> getFormData (int limit, String[] fields, Map<String, Object> filter, String dataId) {
+        public List<Map<String, Object>> getFormData (final int limit, final String[] fields, final Map<String, Object> filter, String dataId) {
             List<Map<String, Object>> data = null;
             try {
                 // 构造请求数据
@@ -280,10 +280,11 @@ public class Demo {
         // 获取表单字段
         List<Map<String, Object>> widgets = api.getFormWidgets();
         System.out.println("表单字段：");
-        widgets.forEach(System.out::println);
-
+        for (Map<String, Object> widget : widgets) {
+            System.out.println(widget);
+        }
         // 按条件查询表单数据
-        List<Map<String, Object>> condList = new ArrayList<>();
+        final List<Map<String, Object>> condList = new ArrayList<Map<String, Object>>();
         condList.add(new HashMap<String, Object>(){
             {
                 put("field", "_widget_1528252846720");
@@ -300,12 +301,16 @@ public class Demo {
         List<Map<String, Object>> data = api.getFormData(10, new String[]{ "_widget_1528252846720", "_widget_1528252846801" },
                 filter, null);
         System.out.println("按条件查询表单数据：");
-        data.forEach(System.out::println);
+        for (Map<String, Object> v : data) {
+            System.out.println(v);
+        }
 
         // 获取表单全部数据
         List<Map<String, Object>> formData = api.getAllFormData(null, null);
         System.out.println("表单全部数据：");
-        formData.forEach(System.out::println);
+        for (Map<String, Object> v : formData) {
+            System.out.println(v);
+        }
 
         // 创建单条数据
         Map<String, Object> create = new HashMap<String, Object>() {
